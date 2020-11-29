@@ -67,6 +67,7 @@ public class UpdateKontakActivity extends AppCompatActivity {
                         "', jenis_kelamin='" + gender.getText().toString() +
                         "', latitude='" + editLatitude.getText().toString() +
                         "', longitude='" + editLongitude.getText().toString() +
+                        "', alamat='" + editAlamat.getText().toString() +
                         "'WHERE nomor='" + editNomor.getText().toString() + "'");
                 Toast.makeText(getApplicationContext(), "Berhasil", Toast.LENGTH_LONG).show();
                 MainActivity.ma.RefreshList();
