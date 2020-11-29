@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,10 +28,11 @@ public class BuatKontakActivity extends AppCompatActivity {
         editNomor = (EditText) findViewById(R.id.editTextNomor);
         editNama = (EditText) findViewById(R.id.editTextNama);
         editNRP = (EditText) findViewById(R.id.editTextTextNRP);
-        editJenisKelamin = (EditText) findViewById(R.id.editTextJenisKelamin);
+//        editJenisKelamin = (EditText) findViewById(R.id.editTextJenisKelamin);
         editAlamat = (EditText) findViewById(R.id.editTextTextAlamat);
         editLatitude = (EditText) findViewById(R.id.editTextTextLatitude);
         editLongitude = (EditText) findViewById(R.id.editTextTextLongitude);
+        final RadioGroup rbg=(RadioGroup) findViewById(R.id.radioGroup1);
 
         bSimpan = (Button) findViewById(R.id.buttonSimpan);
         bKembali = (Button) findViewById(R.id.buttonKembali);
@@ -37,12 +40,14 @@ public class BuatKontakActivity extends AppCompatActivity {
         bSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int selected = rbg.getCheckedRadioButtonId();
+                RadioButton gender=(RadioButton) findViewById(selected);
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.execSQL("insert into biodata(nomor, nama, nrp, jenis_kelamin, alamat,latitude,longitude) values('" +
                         editNomor.getText().toString() + "','" +
                         editNama.getText().toString() + "','" +
                         editNRP.getText().toString() + "','" +
-                        editJenisKelamin.getText().toString() + "','" +
+                        gender.getText().toString() + "','" +
                         editAlamat.getText().toString() + "','" +
                         editLatitude.getText().toString() + "','" +
                         editLongitude.getText().toString() + "')");
