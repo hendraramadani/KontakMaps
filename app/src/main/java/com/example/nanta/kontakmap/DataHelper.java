@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DataHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "biodata.db";
+    private static final String DATABASE_NAME = "kontakmaps.db";
     private static final int DATABASE_VERSION = 1;
     public DataHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -14,7 +14,7 @@ public class DataHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql="create table biodata(nomor integer primary key, nama text null, nrp text null, jenis_kelamin text null, alamat text null);";
+        String sql="create table biodata(nomor integer primary key, nama text null, nrp text null, jenis_kelamin text null, alamat text null, latitude text null, longitude text null);";
         Log.d("Data", "onCreate"+sql);
         db.execSQL(sql);
     }

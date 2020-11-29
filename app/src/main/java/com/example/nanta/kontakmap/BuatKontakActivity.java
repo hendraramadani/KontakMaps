@@ -15,7 +15,7 @@ public class BuatKontakActivity extends AppCompatActivity {
     protected Cursor cursor;
     DataHelper dbHelper;
     Button bSimpan, bKembali;
-    EditText editNomor, editNama, editNRP, editJenisKelamin, editAlamat;
+    EditText editNomor, editNama, editNRP, editJenisKelamin, editAlamat, editLatitude, editLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,8 @@ public class BuatKontakActivity extends AppCompatActivity {
         editNRP = (EditText) findViewById(R.id.editTextTextNRP);
         editJenisKelamin = (EditText) findViewById(R.id.editTextJenisKelamin);
         editAlamat = (EditText) findViewById(R.id.editTextTextAlamat);
+        editLatitude = (EditText) findViewById(R.id.editTextTextLatitude);
+        editLongitude = (EditText) findViewById(R.id.editTextTextLongitude);
 
         bSimpan = (Button) findViewById(R.id.buttonSimpan);
         bKembali = (Button) findViewById(R.id.buttonKembali);
@@ -36,12 +38,14 @@ public class BuatKontakActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                db.execSQL("insert into biodata(nomor, nama, nrp, jenis_kelamin, alamat) values('" +
+                db.execSQL("insert into biodata(nomor, nama, nrp, jenis_kelamin, alamat,latitude,longitude) values('" +
                         editNomor.getText().toString() + "','" +
                         editNama.getText().toString() + "','" +
                         editNRP.getText().toString() + "','" +
                         editJenisKelamin.getText().toString() + "','" +
-                        editAlamat.getText().toString() + "')");
+                        editAlamat.getText().toString() + "','" +
+                        editLatitude.getText().toString() + "','" +
+                        editLongitude.getText().toString() + "')");
                 Toast.makeText(getApplicationContext(), "Berhasil", Toast.LENGTH_LONG).show();
                 MainActivity.ma.RefreshList();
                 finish();

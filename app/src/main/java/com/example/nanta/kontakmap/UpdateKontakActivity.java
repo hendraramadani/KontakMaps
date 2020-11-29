@@ -14,7 +14,7 @@ public class UpdateKontakActivity extends AppCompatActivity {
     protected Cursor cursor;
     DataHelper dbHelper;
     Button bSimpan, bKembali;
-    EditText editNomor, editNama, editNRP, editJenisKelamin, editAlamat;
+    EditText editNomor, editNama, editNRP, editJenisKelamin, editAlamat, editLatitude, editLongitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +26,8 @@ public class UpdateKontakActivity extends AppCompatActivity {
         editNRP = (EditText) findViewById(R.id.editTextTextNRP);
         editJenisKelamin = (EditText) findViewById(R.id.editTextJenisKelamin);
         editAlamat = (EditText) findViewById(R.id.editTextTextAlamat);
+        editLatitude = (EditText) findViewById(R.id.updateLatitude);
+        editLongitude = (EditText) findViewById(R.id.updateLongitude);
 
         bSimpan = (Button) findViewById(R.id.buttonSimpan);
         bKembali = (Button) findViewById(R.id.buttonKembali);
@@ -40,16 +42,20 @@ public class UpdateKontakActivity extends AppCompatActivity {
             editNRP.setText(cursor.getString(2).toString());
             editJenisKelamin.setText(cursor.getString(3).toString());
             editAlamat.setText(cursor.getString(4).toString());
+            editLatitude.setText(cursor.getString(5).toString());
+            editLongitude.setText(cursor.getString(6).toString());
         }
         bSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                db.execSQL("UPDATE biodata set nama='" +
-                        editNama.getText().toString() + "', nrp='" +
-                        editNRP.getText().toString() + "', jenis_kelamin='" +
-                        editJenisKelamin.getText().toString() + "'WHERE nomor='" +
-                        editNomor.getText().toString() + "'");
+                db.execSQL("UPDATE biodata " +
+                        "set nama='" + editNama.getText().toString() +
+                        "', nrp='" + editNRP.getText().toString() +
+                        "', jenis_kelamin='" + editJenisKelamin.getText().toString() +
+                        "', latitude='" + editLatitude.getText().toString() +
+                        "', longitude='" + editLongitude.getText().toString() +
+                        "'WHERE nomor='" + editNomor.getText().toString() + "'");
                 Toast.makeText(getApplicationContext(), "Berhasil", Toast.LENGTH_LONG).show();
                 MainActivity.ma.RefreshList();
                 finish();
