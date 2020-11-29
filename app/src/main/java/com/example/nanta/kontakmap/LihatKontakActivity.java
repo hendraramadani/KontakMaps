@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
@@ -41,15 +43,16 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LihatKontakActivity extends AppCompatActivity  {
+public class LihatKontakActivity extends FragmentActivity implements OnMapReadyCallback {
     protected Cursor cursor;
     DataHelper dbHelper;
-    Button bKembali;
+    Button bKembali, bJarak;
     TextView editNomor, editNama, editNRP, editJenisKelamin, editAlamat, editLatitude, editLongitude;
 
 
     private LocationManager locMan;
     private LocationListener locList;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +65,21 @@ public class LihatKontakActivity extends AppCompatActivity  {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+//            ActivityCompat.requestPermissions(LihatKontakActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},111);
+//            ActivityCompat.requestPermissions(LihatKontakActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},112);
+//            // here to request the missing permissions, and then overriding
+//            public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                                      int[] grantResults);
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
             Toast.makeText(getBaseContext(), "GAGAL REQUEST PERMISSION", Toast.LENGTH_LONG).show();
             return;
         }
         locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, locList);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync((OnMapReadyCallback) this);
 
         dbHelper = new DataHelper(this);
         editNomor = (TextView) findViewById(R.id.editTextNomor);
@@ -82,6 +91,7 @@ public class LihatKontakActivity extends AppCompatActivity  {
         editLongitude = (TextView) findViewById(R.id.editTextLongitude);
 
         bKembali = (Button) findViewById(R.id.buttonKembali);
+        bJarak = (Button) findViewById(R.id.btnJarak);
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         cursor = db.rawQuery("SELECT * FROM biodata WHERE nama = '" + getIntent().getStringExtra("nama") + "'", null);
@@ -97,13 +107,75 @@ public class LihatKontakActivity extends AppCompatActivity  {
             editLatitude.setText(cursor.getString(5).toString());
             editLongitude.setText(cursor.getString(6).toString());
         }
+
+
+//        goToPeta(latitude, longitude, 20);
+
         bKembali.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+        bJarak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String latitude, longitude;
+                latitude = editLatitude.getText().toString();
+                longitude = editLongitude.getText().toString();
+                hitungJarak(latitude, longitude);
+            }
+        });
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Double latitude, longitude;
+        latitude = Double.parseDouble(editLatitude.getText().toString());
+        longitude = Double.parseDouble(editLongitude.getText().toString());
+
+        mMap = googleMap;
+
+        LatLng mapKontak = new LatLng(latitude, longitude);
+        mMap.addMarker(new MarkerOptions().position(mapKontak).title("Marker in Contact Location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapKontak, 15));
+    }
+
+    private void hitungJarak(String latitude, String longitude){
+        TextView txtLat, txtLong;
+        txtLat = (TextView) findViewById(R.id.txtLat);
+        txtLong = (TextView) findViewById(R.id.txtLong);
+
+        Double latAsal, latTujuan, longAsal, longTujuan;
+        latAsal = Double.parseDouble(txtLat.getText().toString());
+        longAsal = Double.parseDouble(txtLong.getText().toString());
+
+        latTujuan = Double.parseDouble(latitude);
+        longTujuan = Double.parseDouble(longitude);
+
+        Location asal = new Location("asal");
+        Location tujuan = new Location("tujuan");
+
+        asal.setLatitude(latAsal);
+        asal.setLongitude(longAsal);
+
+        tujuan.setLatitude(latTujuan);
+        tujuan.setLongitude(longTujuan);
+
+//       Menghitung jarak
+        Float jarak = (float) asal.distanceTo(tujuan)/1000;
+        String jaraknya =String.valueOf(jarak);
+
+        Toast.makeText(getBaseContext(),"Jarak Lokasi HP sekarang dengan Alamat Kontak adalah " + jaraknya + " km.", Toast.LENGTH_LONG).show();
+    }
+
+//    private void goToPeta(Double latitude, Double longitude, Integer zoom) {
+//        LatLng lokasiBaru = new LatLng(latitude, longitude);
+//        mMap.addMarker(new MarkerOptions().position(lokasiBaru).title("Marker in Latitude: " + latitude + " Longitude: " + longitude ));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lokasiBaru, zoom));
+//    }
+
+
 
     private class lokasiListener implements LocationListener {
         TextView txtLat, txtLong;
