@@ -211,5 +211,14 @@
         app:layout_constraintTop_toBottomOf="@+id/map"
         app:layout_constraintVertical_bias="0.0" />
 
+    <Button
+        android:id="@+id/btnTampil"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Tampil"
+        app:layout_constraintEnd_toStartOf="@+id/buttonKembali"
+        app:layout_constraintStart_toEndOf="@+id/btnJarak"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
